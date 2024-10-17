@@ -1,4 +1,5 @@
 -- Task 5: Create trigger to reset "valid_email" when email changes
+DELIMITER $$ ;
 CREATE TRIGGER resets_valid_email BEFORE UPDATE ON users
 FOR EACH ROW
 BEGIN
