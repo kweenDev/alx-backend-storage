@@ -1,5 +1,6 @@
 -- Task 13: Create procedure to compute average weighted score for all users
-DELIMITER //
+DROP PROCEDURE IF EXISTS ComputerAverageWeightedScoreForUsers;
+DELIMITER $$
 CREATE PROCEDURE ComputeAverageScoreForUsers()
 BEGIN
     DECLARE user_cursor CURSOR FOR SELECT id FROM users;
@@ -20,5 +21,5 @@ BEGIN
 
     CLOSE user_cursor;
 END;
-//
+$$
 DELIMITER ;
