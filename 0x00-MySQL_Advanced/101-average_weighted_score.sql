@@ -1,7 +1,7 @@
 -- Task 13: Create procedure to compute average weighted score for all users
 DROP PROCEDURE IF EXISTS ComputerAverageWeightedScoreForUsers;
 DELIMITER $$
-CREATE PROCEDURE ComputeAverageScoreForUsers()
+CREATE PROCEDURE ComputeAverageWeightedScoreForUsers()
 BEGIN
     UPDATE users AS U, 
         (SELECT U.id, SUM(score * weight) / SUM(weight) AS w_avg 
