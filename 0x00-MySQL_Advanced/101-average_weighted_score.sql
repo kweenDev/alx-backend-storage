@@ -3,23 +3,15 @@ DROP PROCEDURE IF EXISTS ComputerAverageWeightedScoreForUsers;
 DELIMITER $$
 CREATE PROCEDURE ComputeAverageScoreForUsers()
 BEGIN
-    DECLARE user_cursor CURSOR FOR SELECT id FROM users;
-    DECLARE done INT DEFAULT 0;
-
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-
-    OPEN user_cursor;
-
-    read_loop: LOOP
-        FETCH user_cursor INTO @user_id;
-        IF done THEN
-            LEAVE read_loop;
-        END IF;
-
-        CAL ComputeAverageScoreForUser(@user_id);
-    END LOOP;
-
-    CLOSE user_cursor;
+    UPDATE users AS U, 
+        (SELECT U.id, SUM(score * weight) / SUM(weight) AS w_avg 
+        FROM users AS U 
+        JOIN corrections as C ON U.id=C.user_id 
+        JOIN projects AS P ON C.project_id=P.id 
+        GROUP BY U.id)
+    AS WA
+    SET U.average_score = WA.w_avg 
+    WHERE U.id=WA.id;
 END;
 $$
 DELIMITER ;
