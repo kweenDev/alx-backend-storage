@@ -1,5 +1,6 @@
 -- Task 7: Create procedure to compute and store the average score for a user
-DELIMITER //
+DROP PROCEDURE IF EXISTS ComputerAverageScoreForUser;
+DELIMITER $$
 CREATE PROCEDURE ComputeAverageScoreForUser(IN user_id INT)
 BEGIN
     DECLARE avg_score FLOAT;
@@ -9,6 +10,6 @@ BEGIN
 
     -- Update the user's average score
     UPDATE users SET average_score = avg_score WHERE id = user_id;
-END;
-//
+END
+$$
 DELIMITER ;
