@@ -1,0 +1,2 @@
+// Switch to 'my_db' or create it if it does not exist
+use my_db
