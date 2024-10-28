@@ -5,17 +5,8 @@ web.py
 A module that provides tools for caching HTTP request data and tracking
 the number of times a URL has been requested using Redis.
 
-Author: Your Name
+Author: Refiloe Radebe
 Date: October 24, 2024
-
-Features:
-- `data_cacher`: A decorator that caches HTTP request responses and tracks
-  the number of requests made to a specific URL.
-- `get_page`: A function that fetches the content of a URL, using caching
-  and request tracking to optimize repeated requests.
-
-The Redis instance stores both the cached responses and the number of times
-each URL has been requested, preventing unnecessary network calls.
 """
 
 import redis
@@ -23,10 +14,8 @@ import requests
 from functools import wraps
 from typing import Callable
 
-
 # Module-level Redis instance for caching and tracking purposes
 redis_store = redis.Redis()
-"""The Redis instance used for caching URL responses and tracking URL requests."""
 
 
 def data_cacher(method: Callable) -> Callable:
@@ -63,18 +52,24 @@ def data_cacher(method: Callable) -> Callable:
             str: The cached response or the fresh content of the URL.
         """
         # Increment the request count for the URL
-        redis_store.incr(f'count:{url}')
+        request_count_key = f'count:{url}'
+        result_key = f'result:{url}'
 
-        # Check if the URL response is cached in Redis
-        cached_result = redis_store.get(f'result:{url}')
+        # Increment the counter for the number of calls made to the URL
+        redis_store.incr(request_count_key)
+
+        # Check if the URL response is already cached
+        cached_result = redis_store.get(result_key)
         if cached_result:
             return cached_result.decode('utf-8')
 
-        # If not cached, fetch the result and cache it
+        # Fetch the data from the URL if not cached
         result = method(url)
-        # Cache expires in 10 seconds
-        redis_store.setex(f'result:{url}', 10, result)
+
+        # Cache the result with a 10-second expiration
+        redis_store.setex(result_key, 10, result)
         return result
+
     return invoker
 
 
