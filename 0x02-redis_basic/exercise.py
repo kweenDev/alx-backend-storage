@@ -122,10 +122,9 @@ def replay(fn: Callable) -> None:
 
     # Displaying each input-output pair
     for fxn_input, fxn_output in zip(fxn_inputs, fxn_outputs):
-        print(
-            f'{fxn_name}(
-                *{fxn_input.decode("utf-8")}) -> {fxn_output.decode("utf-8")}'
-        )
+        input_str = fxn_input.decode("utf-8")
+        output_str = fxn_output.decode("utf-8")
+        print(f'{fxn_name}(*{input_str}) -> {output_str}')
 
 
 class Cache:
