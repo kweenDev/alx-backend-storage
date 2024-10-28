@@ -9,15 +9,14 @@ Author: Refiloe Radebe
 Date: October 24, 2024
 
 Features:
-- `Cache`: A class that interacts with Redis to store,
-retrieve, and track data.
+- `Cache`: A class that interacts with Redis to store, retrieve, and track
+data.
 - `count_calls`: A decorator to count how many times a method is called.
 - `call_history`: A decorator to track input/output of a method.
 - `replay`: A function to display the call history of a method.
 
-Redis is used for data persistence, and the module supports
-storing different data types such as strings, bytes, integers,
-and floats.
+Redis is used for data persistence, and the module supports storing different
+data types such as strings, bytes, integers, and floats.
 """
 
 import uuid
@@ -34,8 +33,8 @@ def count_calls(method: Callable) -> Callable:
         method (Callable): The method to be decorated.
 
     Returns:
-        Callable: A wrapped method that increments a call
-        counter before invocation.
+        Callable: A wrapped method that increments a call counter before
+        invocation.
     """
     @wraps(method)
     def invoker(self, *args, **kwargs) -> Any:
@@ -64,8 +63,8 @@ def call_history(method: Callable) -> Callable:
         method (Callable): The method to be decorated.
 
     Returns:
-        Callable: A wrapped method that logs inputs and
-        outputs before invocation.
+        Callable: A wrapped method that logs inputs and outputs before
+        invocation.
     """
     @wraps(method)
     def invoker(self, *args, **kwargs) -> Any:
@@ -93,15 +92,15 @@ def call_history(method: Callable) -> Callable:
 
 def replay(fn: Callable) -> None:
     """
-    Displays the history of calls made to a method,
-    including inputs and outputs.
+    Displays the history of calls made to a method, including inputs and
+    outputs.
 
     Args:
         fn (Callable): The method whose history is to be displayed.
 
     Output:
-        None: Prints the call history, including
-        method inputs and outputs, to the console.
+        None: Prints the call history, including method inputs and outputs,
+        to the console.
     """
     if fn is None or not hasattr(fn, '__self__'):
         return
@@ -123,9 +122,10 @@ def replay(fn: Callable) -> None:
 
     # Displaying each input-output pair
     for fxn_input, fxn_output in zip(fxn_inputs, fxn_outputs):
-        print(f'{fxn_name}(
-              *{fxn_input.decode("utf-8")}) -> {fxn_output.decode(
-                  "utf-8")}')
+        print(
+            f'{fxn_name}(
+                *{fxn_input.decode("utf-8")}) -> {fxn_output.decode("utf-8")}'
+        )
 
 
 class Cache:
@@ -133,16 +133,16 @@ class Cache:
     Represents a caching system using Redis for data persistence.
 
     Attributes:
-        _redis (redis.Redis): Redis connection object for
-        storing and retrieving data.
+        _redis (redis.Redis): Redis connection object for storing and
+        retrieving data.
     """
 
     def __init__(self) -> None:
         """
         Initializes the Cache instance with a Redis connection.
 
-        This also clears the Redis database to ensure a clean
-        slate for storage.
+        This also clears the Redis database to ensure a clean slate for
+        storage.
         """
         self._redis = redis.Redis()
         self._redis.flushdb(True)
@@ -153,13 +153,12 @@ class Cache:
         """
         Stores data in Redis and returns a unique key associated with it.
 
-        The method is decorated with `call_history` and
-        `count_calls` to log usage
-        and track the number of calls.
+        The method is decorated with `call_history` and `count_calls` to log
+        usage and track the number of calls.
 
         Args:
-            data (Union[str, bytes, int, float]): The data to be
-            stored in Redis.
+            data (Union[str, bytes, int, float]): The data to be stored in
+            Redis.
 
         Returns:
             str: A unique key identifying the stored data.
@@ -171,17 +170,17 @@ class Cache:
     def get(self, key: str, fn: Callable = None) -> Union[
             str, bytes, int, float]:
         """
-        Retrieves data from Redis based on a provided key and
-        optionally transforms it.
+        Retrieves data from Redis based on a provided key and optionally
+        transforms it.
 
         Args:
             key (str): The key associated with the data in Redis.
-            fn (Callable, optional): A function that transforms the
-            data before returning it.
+            fn (Callable, optional): A function that transforms the data
+            before returning it.
 
         Returns:
-            Union[str, bytes, int, float]: The retrieved data,
-            optionally transformed by `fn`.
+            Union[str, bytes, int, float]: The retrieved data, optionally
+            transformed by `fn`.
         """
         data = self._redis.get(key)
         return fn(data) if fn is not None else data
