@@ -4,18 +4,32 @@
 This script retrieves statistics about Nginx logs from MongoDB.
 """
 
-import pymongo
+
 from pymongo import MongoClient
 
 
-if __name__ == "__main__":
-    client = pymongo.MongoClient('mongodb://127.0.0.1:27017')
-    ng = client.logs.nginx
-    print(f"{ng.count_documents({})} logs")
+def log_stats():
+    """ log_stats.
+    """
+    client = MongoClient('mongodb://127.0.0.1:27017')
+    logs_collection = client.logs.nginx
+    total = logs_collection.count_documents({})
+    get = logs_collection.count_documents({"method": "GET"})
+    post = logs_collection.count_documents({"method": "POST"})
+    put = logs_collection.count_documents({"method": "PUT"})
+    patch = logs_collection.count_documents({"method": "PATCH"})
+    delete = logs_collection.count_documents({"method": "DELETE"})
+    path = logs_collection.count_documents(
+        {"method": "GET", "path": "/status"})
+    print(f"{total} logs")
     print("Methods:")
-    for met in ["GET", "POST", "PUT", "PATCH", "DELETE"]:
-        print("\tmethod {}: {}".format(met, ng.count_documents({
-            "method": met
-        })))
-    print("{} status check".format(ng.count_documents(
-        {"$and": [{"method": "GET"}, {"path": "/status"}]})))
+    print(f"\tmethod GET: {get}")
+    print(f"\tmethod POST: {post}")
+    print(f"\tmethod PUT: {put}")
+    print(f"\tmethod PATCH: {patch}")
+    print(f"\tmethod DELETE: {delete}")
+    print(f"{path} status check")
+
+
+if __name__ == "__main__":
+    log_stats()
