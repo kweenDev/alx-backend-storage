@@ -3,6 +3,8 @@
 List all documents in the collection.
 """
 
+import pymongo
+
 
 def list_all(mongo_collection):
     """
@@ -12,4 +14,7 @@ def list_all(mongo_collection):
     Returns:
         List of documents or an empty list if no documents are found.
     """
-    return list(mongo_collection()) or []
+    if not mongo_collection:
+        return []
+    docs = mongo_collection.find()
+    return list(mongo_collection()) or [doc for doc in docs]
