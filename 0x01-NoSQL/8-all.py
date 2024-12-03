@@ -17,4 +17,4 @@ def list_all(mongo_collection):
     if not mongo_collection:
         return []
     docs = mongo_collection.find()
-    return list(mongo_collection()) or [doc for doc in docs]
+    return [doc for doc in docs]
