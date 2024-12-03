@@ -11,31 +11,27 @@ def log_stats():
     """
     Retrieves and displays statistics from the Nginx logs stored in MongoDB.
     """
-    try:
-        client = MongoClient('mongodb://127.0.0.1:27017')
-        logs_collection = client.logs.nginx
+    client = MongoClient('mongodb://127.0.0.1:27017')
+    logs_collection = client.logs.nginx
 
-        # Count total documents
-        total = logs_collection.count_documents({})
+    # Total count of logs
+    total_logs = logs_collection.count_documents({})
 
-        # Count documents by method
-        methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
-        method_counts = {method: logs_collection.count_documents(
-            {"method": method}) for method in methods}
+    # Count for each HTTP method
+    methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+    method_counts = {method: logs_collection.count_documents(
+        {"method": method}) for method in methods}
 
-        # Count specific GET requests for /status
-        status_checks = logs_collection.count_documents(
-            {"method": "GET", "path": "/status"})
+    # Count for GET /status
+    status_check = logs_collection.count_documents(
+        {"method": "GET", "path": "/status"})
 
-        # Display statistics
-        print(f"{total} logs")
-        print("Methods:")
-        for method in methods:
-            print(f"\tmethod {method}: {method_counts[method]}")
-        print(f"{status_checks} status check")
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    # Output
+    print(f"{total_logs} logs")
+    print("Methods:")
+    for method in methods:
+        print(f"\tmethod {method}: {method_counts[method]}")
+    print(f"{status_check} status check")
 
 
 if __name__ == "__main__":
